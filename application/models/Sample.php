@@ -20,15 +20,16 @@ class SampleModel extends Orm_Base
 
 	);
 	public $pk = 'id';
-
+	
 	public function selectSample()
 	{
 		$sData = $this->field('id, username, logincount, active')->fList();
 		return $sData;
-    }
-
+	}
+	
 	public function insertSample($arrInfo)
 	{
-        return true;
-    }
+		return true;
+	}
+
 }
