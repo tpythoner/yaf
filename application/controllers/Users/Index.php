@@ -5,7 +5,7 @@
  * @desc 默认控制器
  * @see http://www.php.net/manual/en/class.yaf-controller-abstract.php
  */
-class IndexController extends Ctrl_Base 
+class Users_IndexController extends Ctrl_Base
 {
 
 	/** 
@@ -15,32 +15,27 @@ class IndexController extends Ctrl_Base
      */
 	public function indexAction($name = "Stranger") 
 	{
-		
-		$get = $this->getRequest()->getQuery("get", "default value");
-		$model = new SampleModel();
-		print_r($model->selectSample());
+		echo $name;
+		print_r($_GET);
+		//1. fetch query
+		/*$get = $this->getRequest()->getQuery("get", "default value");
 
-		$this->assign("content", $model->selectSample());
-		$this->assign("name", $name);
+		//2. fetch model
+		$model = new SampleModel();
+
+		//3. assign
+		$this->getView()->assign("content", $model->selectSample());
+		$this->getView()->assign("name", $name);
 
 		//4. render by Yaf, 如果这里返回FALSE, Yaf将不会调用自动视图引擎Render模板
-		
-        return TRUE;
+		 */
+        return FALSE;
 	}
 
 	public function updateAction($name = 'admin') 
 	{
-		
 		echo $name;
 		Tool_Fnc::dump(Yaf_Registry::get("config"));
 		exit('what\'s your name?');
 	}
-
-	public function selectAction() 
-	{
-		print_r($_GET);
-		Tool_Fnc::dump('test');
-		exit;
-	}
-
 }
