@@ -22,10 +22,7 @@ class IndexController extends Ctrl_Base
 
 		$this->assign("content", $model->selectSample());
 		$this->assign("name", $name);
-
-		//4. render by Yaf, 如果这里返回FALSE, Yaf将不会调用自动视图引擎Render模板
-		
-        return TRUE;
+		return TRUE;
 	}
 
 	public function updateAction($name = 'admin') 
