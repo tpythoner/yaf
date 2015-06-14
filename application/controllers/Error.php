@@ -1,16 +1,27 @@
 <?php
-/**
- * @name ErrorController
- * @desc 错误控制器, 在发生未捕获的异常时刻被调用
- * @see http://www.php.net/manual/en/yaf-dispatcher.catchexception.php
- * @author root
- */
-class ErrorController extends Yaf_Controller_Abstract {
-
-	//从2.1开始, errorAction支持直接通过参数获取异常
+class ErrorController extends yaf_controller_abstract {
 	public function errorAction($exception) {
-		//1. assign to view engine
+		if(empty($_GET['yafphp_errormsg'])) {
+			self::page403();
+		}
 		$this->getView()->assign("exception", $exception);
-		//5. render by Yaf 
+	}
+
+	static function page403(){
+		header("HTTP/1.1 403 Forbidden");
+		empty($_SERVER['REDIRECT_URL']) && $_SERVER['REDIRECT_URL'] = '/';
+		if(false !== strpos($_SERVER['REDIRECT_URL'], '<')){
+			$_SERVER['REDIRECT_URL'] = '/';
+		}
+		exit("<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">
+				<html><head>
+				<title>403 Forbidden</title>
+				</head><body>
+				<h1>Forbidden</h1>
+				<p>You don't have permission to access {$_SERVER['REDIRECT_URL']}
+				on this server.</p>
+				<hr>
+				</body></html>
+				");
 	}
 }

@@ -6,14 +6,25 @@
  */
 class SampleModel extends Orm_Base
 {
-	public function __construct() 
-	{
-	
-	}   
-    
+	public $table = 'tb_user';
+	public $field = array(
+		'id' => array('type' => "int", 'comment' => 'id'),
+		'username' => array('type' => "varchar", 'comment' => '用户名'),
+		'password' => array('type' => "varchar", 'comment' => '密码'),
+		'email' => array('type' => "varchar", 'comment' => '邮箱'),
+		'logincount' => array('type' => "mediumint", 'comment' => '登录次数'),
+		'lastip' => array('type' => "varchar", 'comment' => '最后登录IP'),
+		'lastlogin' => array('type' => "datetime", 'comment' => '最后登录书剑'),
+		'authkey' => array('type' => "char", 'comment' => '登录key'),
+		'active' => array('type' => "tinyint", 'comment' => '是否激活'),
+
+	);
+	public $pk = 'id';
+
 	public function selectSample()
 	{
-        return 'SampleModel';
+		$sData = $this->field('id, username, logincount, active')->fList();
+		return $sData;
     }
 
 	public function insertSample($arrInfo)

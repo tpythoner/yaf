@@ -18,7 +18,7 @@ class IndexController extends Ctrl_Base
 		
 		$get = $this->getRequest()->getQuery("get", "default value");
 		$model = new SampleModel();
-		print_r($model->selectSample());
+		Tool_Fnc::dump($model->selectSample());
 
 		$this->assign("content", $model->selectSample());
 		$this->assign("name", $name);
