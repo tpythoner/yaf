@@ -46,8 +46,7 @@ class Tool_Fnc
 	static function redirect($url, $time=0, $msg='') 
 	{
         $url = str_replace(array("\n", "\r"), '', $url);
-		if (!empty($msg))
-		{
+		if (!empty($msg)) {
             $msg = $msg;
         } else {
             $msg = "系统将在{$time}秒之后自动跳转到{$url}！";
