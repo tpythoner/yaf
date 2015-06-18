@@ -53,11 +53,12 @@ class Orm_Base{
 	/**
 	 * 构造函数
 	 */
-	public function __construct($pPK = 0, $pConfig = 'default'){
+	public function __construct($pPK = 0, $pConfig = 'default')
+	{
 		$this->_config = $pConfig;
 		# 通过主键取出数据
-		if($pPK && $pPK = abs($pPK)){
-			if($tRow = $this->fRow($pPK)){
+		if($pPK && $pPK = abs($pPK)) {
+			if($tRow = $this->fRow($pPK)) {
 				foreach($tRow as $k1 => $v1) $this->$k1 = $v1;
 			} else {
 				foreach($this->field as $k1 => $v1) $this->$k1 = false;
@@ -70,7 +71,7 @@ class Orm_Base{
 	 */
     public static function &instance($pConfig = 'default')
     {
-		if(empty(self::$instance[$pConfig])){
+		if(empty(self::$instance[$pConfig])) { 
 			# 实例化PDO
 			$tDB = Yaf_Registry::get("config")->db->$pConfig->toArray();
 			self::$instance[$pConfig] = new PDO($tDB['dsn'], $tDB['username'], $tDB['password'], array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
@@ -83,7 +84,7 @@ class Orm_Base{
     public static function getInstance()
     {
         $class_now = get_called_class();
-        if(empty(self::$instance_model[$class_now])){
+        if(empty(self::$instance_model[$class_now])) {
             self::$instance_model[$class_now] = new $class_now;
         }
         return self::$instance_model[$class_now];
@@ -95,19 +96,20 @@ class Orm_Base{
 	 * @param array $pArgs
 	 * @return mixed
 	 */
-	public function __call($pMethod, $pArgs){
+	public function __call($pMethod, $pArgs)
+	{
 		# 连贯操作的实现
-		if(in_array($pMethod, array('field', 'table', 'where', 'order', 'limit', 'page', 'having', 'group', 'lock', 'distinct'), true)){
+		if(in_array($pMethod, array('field', 'table', 'where', 'order', 'limit', 'page', 'having', 'group', 'lock', 'distinct'), true)) {
 			$this->options[$pMethod] = $pArgs[0];
 			return $this;
 		}
 		# 统计查询的实现
-		if(in_array($pMethod, array('count', 'sum', 'min', 'max', 'avg'))){
+		if(in_array($pMethod, array('count', 'sum', 'min', 'max', 'avg'))) {
 			$field = isset($pArgs[0])? $pArgs[0]: '*';
 			return $this->fOne("$pMethod($field)");
 		}
 		# 根据某个字段获取记录
-		if('ff' == substr($pMethod, 0, 2)){
+		if('ff' == substr($pMethod, 0, 2)) {
 			return $this->where(strtolower(substr($pMethod, 2)) . "='{$pArgs[0]}'")->fRow();
 		}
 	}
@@ -116,9 +118,10 @@ class Orm_Base{
 	 * 过滤危险数据
 	 * @param array $pData
 	 */
-	private function _filter(&$pData){
-		foreach($pData as $k1 => &$v1){
-			if(empty($this->field[$k1])){
+	private function _filter(&$pData) 
+	{
+		foreach($pData as $k1 => &$v1) {
+			if(empty($this->field[$k1])) {
 				unset($pData[$k1]);
 				continue;
 			}
@@ -131,7 +134,8 @@ class Orm_Base{
 	 * 查询参数
 	 * @param mixed $pOpt
 	 */
-	private function _options($pOpt = array()){
+	private function _options($pOpt = array())
+	{
 		# 合并查询条件
 		$tOpt = $pOpt ? array_merge($this->options, $pOpt): $this->options;
 		$this->options = array();
@@ -141,11 +145,11 @@ class Orm_Base{
 		#  查询条件
         if(isset($tOpt['where']) && is_array($tOpt['where'])) {
             foreach($tOpt['where'] as $k1 => $v1) {
-                if(isset($this->field[$k1]) && is_scalar($v1)){
+                if(isset($this->field[$k1]) && is_scalar($v1)) {
                     # 整型格式化
-                    if(false !== strpos($this->field[$k1]['type'], 'int')){
+                    if(false !== strpos($this->field[$k1]['type'], 'int')) {
                         $tOpt['where'][$k1] = intval($v1);
-                    } elseif(false !== strpos($this->field[$k1]['type'], 'float')){
+                    } elseif(false !== strpos($this->field[$k1]['type'], 'float')) {
                         $tOpt['where'][$k1] = floatval($v1);
                     }
                 }
@@ -157,12 +161,12 @@ class Orm_Base{
 	/**
 	 * 执行SQL
 	 */
-	public function exec($pSql){
+	public function exec($pSql)
+	{
 		$this->db = &self::instance($this->_config);
-		if($tReturn = $this->db->exec($pSql)){
+		if($tReturn = $this->db->exec($pSql)) {
 			$this->error = array();
-		}
-		else{
+		} else {
 			$this->error = $this->db->errorInfo();
 			isset($this->error[1]) || $this->error = array();
 		}
@@ -175,7 +179,8 @@ class Orm_Base{
 	 * @param int $pCode 错误码
 	 * @param string $pState SQL错误码
 	 */
-	public function setError($pMsg, $pCode = 1, $pState = 'BTC001'){
+	public function setError($pMsg, $pCode = 1, $pState = 'BTC001')
+	{
 		$this->error = array($pState, $pCode, $pMsg);
 		return false;
 	}
@@ -185,7 +190,8 @@ class Orm_Base{
 	 * @param str $pKey MemKey
 	 * @param int $pExpire 有效期
 	 */
-	public function cache($pKey = 'md5', $pExpire = 86400){
+	public function cache($pKey = 'md5', $pExpire = 86400)
+	{
 		$this->cache['key'] = $pKey;
 		$this->cache['expire'] = $pExpire;
 		return $this;
@@ -194,7 +200,8 @@ class Orm_Base{
 	/**
 	 * 执行SQL，并返回结果
 	 */
-	public function query(){
+	public function query()
+	{
 		$tArgs = func_get_args();
 		$tSql = array_shift($tArgs);
 		# 锁表查询
@@ -203,18 +210,18 @@ class Orm_Base{
 			$this->_lock = '';
 		}
 		# 使用缓存
-		if($this->cache){
+		if($this->cache) {
 			$tMem = &Cache_Redis::instance('mysql');
-			if('md5' == $this->cache['key']){
+			if('md5' == $this->cache['key']) { 
 				$this->cache['key'] = md5($tSql . ($tArgs ? join(',', $tArgs): ''));
 			}
-			if(false !== ($tData = $tMem->get($this->cache['key']))){
+			if(false !== ($tData = $tMem->get($this->cache['key']))) {
 				return json_decode($tData, true);
 			}
 		}
 		# 查询数据库
 		$this->db = &self::instance($this->_config);
-		if($tArgs){
+		if($tArgs) {
 			$tQuery = $this->db->prepare($tSql);
 			$tQuery->execute($tArgs);
 		} else {
@@ -227,7 +234,7 @@ class Orm_Base{
 		}
 		$tData = $tQuery->fetchAll(PDO::FETCH_ASSOC);
 		# 不缓存查询结果
-		if(!$this->cache){
+		if(!$this->cache) {
 			return $tData;
 		}
 		# 设置缓存
@@ -240,18 +247,21 @@ class Orm_Base{
 	/**
 	 * 保存记录(自动区分 增/改)
 	 */
-	public function save($pData){
+	public function save($pData)
+	{
 		return isset($pData[$this->pk]) ? $this->update($pData) : $this->insert($pData);
 	}
 
 	/**
 	 * 添加记录
 	 */
-	public function insert($pData, $pReplace = false){
-		if($this->_filter($pData)){
+	public function insert($pData, $pReplace = false)
+	{
+		if($this->_filter($pData))
+		{
 			$tField = '`'.join('`,`', array_keys($pData)).'`';
 			$tVal = join("','", $pData);
-			if($this->exec(($pReplace ? "REPLACE": "INSERT") . " INTO `$this->table`($tField) VALUES ('$tVal')")){
+			if($this->exec(($pReplace ? "REPLACE": "INSERT") . " INTO `$this->table`($tField) VALUES ('$tVal')")) {
 				return $this->db->lastInsertId();
 			} 
 		}
@@ -261,19 +271,20 @@ class Orm_Base{
 	/**
 	 * 更新记录
 	 */
-	public function update($pData){
+	public function update($pData)
+	{
 		# 过滤
         if(!$this->_filter($pData)) {
             return false;
         }
 		# 条件
 		$tOpt = array();
-		if(isset($pData[$this->pk])){
+		if(isset($pData[$this->pk])) {
 			$tOpt = array('where' => "$this->pk='{$pData[$this->pk]}'");
 		}
 		$tOpt = $this->_options($tOpt);
 		# 更新
-		if($pData && !empty($tOpt['where'])){
+		if($pData && !empty($tOpt['where'])) {
             foreach($pData as $k1 => $v1) {
                 $tSet[] = "`$k1`='$v1'";
             }
@@ -287,8 +298,9 @@ class Orm_Base{
      * @param $pId pk_id或者sql语句
      * @return array()
 	 */
-	public function fRow($pId = 0){
-		if(false === stripos($pId, 'SELECT')){
+	public function fRow($pId = 0)
+	{
+		if(false === stripos($pId, 'SELECT')) {
 			$tOpt = $pId ? $this->_options(array('where' => $this->pk . '=' . abs($pId))): $this->_options();
 			$tOpt['where'] = empty($tOpt['where'])? '': ' WHERE ' . $tOpt['where'];
 			$tOpt['order'] = empty($tOpt['order'])? '': ' ORDER BY ' . $tOpt['order'];
@@ -296,7 +308,7 @@ class Orm_Base{
 		} else {
 			$tSql = &$pId;
 		}
-		if($tResult = $this->query($tSql)){
+		if($tResult = $this->query($tSql)) {
 			return $tResult[0];
 		}
 		return array();
@@ -308,9 +320,10 @@ class Orm_Base{
 	 * @param string $field
 	 * @return string
 	 */
-	public function fOne($field){
+	public function fOne($field)
+	{
 		$this->field($field);
-		if(($tRow = $this->fRow()) && isset($tRow[$field])){
+		if(($tRow = $this->fRow()) && isset($tRow[$field])) {
 			return $tRow[$field];
 		}
 		return false;
@@ -319,8 +332,10 @@ class Orm_Base{
 	/**
 	 * 查找多条
 	 */
-	public function fList($pOpt = array()){
-		if(!is_array($pOpt)){
+	public function fList($pOpt = array())
+	{
+		if(!is_array($pOpt))
+		{
 			$pOpt = array('where' => $this->pk . (strpos($pOpt, ',') ? ' IN(' . $pOpt . ')': '=' . $pOpt));
 		}
 		$tOpt = $this->_options($pOpt);
@@ -340,7 +355,8 @@ class Orm_Base{
 	 * @param string $field
 	 * @return array
 	 */
-	public function fHash($field){
+	public function fHash($field)
+	{
 		$this->field($field);
 		$tList = array();
 		$tField = explode(',', $field);
@@ -353,7 +369,8 @@ class Orm_Base{
 	 * 库 > (所有)数据表
 	 * @return array
 	 */
-	public function getTables(){
+	public function getTables()
+	{
 		$this->db = &self::instance($this->_config);
 		return $this->db->query("SHOW TABLES")->fetchAll(3);
 	}
@@ -362,14 +379,16 @@ class Orm_Base{
 	 * 数据表 > (所有)字段
 	 * @return array
 	 */
-	public function getFields($pTable){
+	public function getFields($pTable)
+	{
 		$this->db = &self::instance($this->_config);
 		$tQuery = $this->db->query("SHOW FULL FIELDS FROM `$pTable`");
 		return $tQuery ? $tQuery->fetchAll(2) : array();
 	}
 
 	public $join = array();
-	public function join($pTable, $pWhere, $pPrefix = ''){
+	public function join($pTable, $pWhere, $pPrefix = '')
+	{
 		$this->join[] = " $pPrefix JOIN `$pTable` ON $pWhere ";
 		return $this;
 	}
@@ -377,11 +396,12 @@ class Orm_Base{
 	/**
 	 * 事务开始
 	 */
-	public function begin(){
+	public function begin()
+	{
 		$this->db || $this->db = &self::instance($this->_config);
 		# 已经有事务，退出事务
 		$this->back();
-		if(!$this->db->beginTransaction()){
+		if(!$this->db->beginTransaction()) {
 			return false;
 		}
 		$this->_begin_transaction = true;
@@ -391,7 +411,8 @@ class Orm_Base{
 	/**
 	 * 事务提交
 	 */
-	public function commit(){
+	public function commit()
+	{
 		if($this->_begin_transaction) {
 			$this->_begin_transaction = false;
 			$this->db->commit();
@@ -402,7 +423,8 @@ class Orm_Base{
 	/**
 	 * 事务回滚
 	 */
-	public function back(){
+	public function back()
+	{
 		if($this->_begin_transaction) {
 			$this->_begin_transaction = false;
 			$this->db->rollback();
@@ -413,7 +435,8 @@ class Orm_Base{
 	/**
 	 * 锁表
 	 */
-	public function lock($pSql = 'FOR UPDATE'){
+	public function lock($pSql = 'FOR UPDATE')
+	{
 		$this->_lock = $pSql;
 		return $this;
 	}
