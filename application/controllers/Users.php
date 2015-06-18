@@ -9,7 +9,11 @@ class UsersController extends Ctrl_Base
 
 	public function indexAction($name = "Stranger") 
 	{
-		echo $name;
+		if ($name == 'tony') {
+			Tool_Fnc::dump($_GET);
+		} else {
+			print_r('This is a page');
+		}
 		print_r($_GET);
 		return FALSE;
 	}
@@ -23,7 +27,7 @@ class UsersController extends Ctrl_Base
 
 	public function selectAction()
 	{
-		if(isset($_GET['isyes']) && $_GET['isyes'] == 'no') {
+		if (isset($_GET['isyes']) && $_GET['isyes'] == 'no') {
 			print_R($_GET);
 		} else {
 			echo 'admin';
