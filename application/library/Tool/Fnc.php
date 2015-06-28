@@ -126,7 +126,7 @@ class Tool_Fnc
 	 * @param  boolean $suffix  [是否有省略号]
 	 * @return [type]           [description]
 	 */
-	function msubstr($str, $start=0, $length=15, $charset="utf-8", $suffix=true) 
+	static function msubstr($str, $start=0, $length=15, $charset="utf-8", $suffix=true) 
 	{
 		if(function_exists("mb_substr")) {
 			return mb_substr($str, $start, $length, $charset);
