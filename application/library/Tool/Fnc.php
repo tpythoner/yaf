@@ -128,7 +128,7 @@ class Tool_Fnc
 	 */
 	static function msubstr($str, $start=0, $length=15, $charset="utf-8", $suffix=true) 
 	{
-		if(function_exists("mb_substr")) {
+		if (function_exists("mb_substr")) {
 			return mb_substr($str, $start, $length, $charset);
 		} elseif (function_exists('iconv_substr')) {
 			return iconv_substr($str,$start,$length,$charset);
