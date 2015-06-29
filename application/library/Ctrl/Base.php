@@ -14,7 +14,7 @@ abstract class Ctrl_Base extends Yaf_Controller_Abstract
 	
 	protected function assign($pKey, $pVal = '')
 	{
-		if(is_array($pKey)) {
+		if (is_array($pKey)) {
 			$this->_view->assign($pKey);
 			return $pKey;
 		}
